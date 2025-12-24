@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <head>
+        <style>
+            body{
+                background-color: rgb(29, 29, 29);
+                font-size: 12px;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+            }
+        .wrapper{
+padding: 14px 10px;
+            }
+            #game {
+                display: grid;
+                width: 100vw;
+                 height: 100vh;/*50x30*/
+                grid-template-columns: repeat(18, 1fr);
+                grid-template-rows: repeat(18, 1fr);
+                background: #111;
+            }
+            .cell{
+                border:1px solid #222;
+                background:#1c1c1c;
+            }
+            .player{
+                background:silver;
+            }
+        </style>
+        
+    </head>
+    <body><div class="wrapper">
+        <div class="pagewall">
+            <div id="game"></div>
+     <script src="game.js"></script>
+
+    </div></div></body>
+</head>
+</html>
