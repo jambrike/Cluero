@@ -29,7 +29,7 @@ body{
                 border:1px solid #222;
                 background:#1c1c1c;
                 width:32px;height:32px;
-                background-image: url(woodflooring.png);
+                box-sizing: border-box;
             }
             .player{
                 background:silver;
@@ -39,6 +39,38 @@ body{
                 border: 2px solid rgb(150, 110, 255);
                 box-sizing: border-box;
             }
+            .floor{
+                background-image: url(woodflooring.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+
+            }
+            .library{
+                background-image: url(books.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+                
+            }
+            .livingroom{
+                background-image: url(livingroom.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }   
+            .kitchen{
+                background-image: url(kitchenmarble.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+            
+
 
             #cornerbox{
                 position: absolute;
