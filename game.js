@@ -28,18 +28,30 @@ const player={x:6,y:1}
 let stepsLeft=0
 //detect by position for this cause only 300 squares tbf
 const roomTiles={
-  kitchen:{x:0,y:0,w:4,h:4},
-  ballroom:{x:6,y:0,w:6,h:5},
-  conservatory:{x:13,y:0,w:5,h:4},
-  library:{x:0,y:11,w:4,h:5},
-  study:{x:13,y:11,w:5,h:5}
-}
+  kitchen:      { x: 0,  y: 0,  w: 4, h: 4, type: "kitchen", doors: [{x:3, y:4}] },
+  ballroom:     { x: 6,  y: 0,  w: 6, h: 5, type: "room",    doors: [{x:6, y:5}, {x:11, y:5}] },
+  conservatory: { x: 13, y: 0,  w: 5, h: 4, type: "study",   doors: [{x:13, y:4}] },
+  library:      { x: 0,  y: 11, w: 4, h: 5, type: "library", doors: [{x:3, y:11}] },
+  study:        { x: 13, y: 11, w: 5, h: 5, type: "study",   doors: [{x:13, y:11}] }
+};
 
 document.getElementById("rolldice").onclick=()=>{
   const d1=Math.floor(Math.random()*6)+1
   const d2=Math.floor(Math.random()*6)+1
   stepsLeft=d1+d2
   document.getElementById("stepsleft").textContent=stepsLeft
+}
+ 
+//simeple function to find room by player position
+function RoomAt(x, y) {
+  for (let key in roomTiles) {
+    let r = roomTiles[key];
+    if (x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h) {
+      return r;
+    }
+  }
+
+  return null;
 }
 
 document.addEventListener("keydown",e=>{
@@ -81,14 +93,31 @@ function checkRoom(){
 
 function render(){
   gameArea.innerHTML=""
-  gameArea.style.position="relative"
 
   for(let y=0;y<rows;y++){
     for(let x=0;x<cols;x++){
-      const cell=document.createElement("div")
-      cell.className="cell"
+      let cell=document.createElement("div")
+      cell.classList.add=("cell")
+
+      let room=RoomAt(x,y)
+      if(room){
+        cell.classList.add("room")
+        cell.classList.add(room.type)
+      }else{
+        cell.classList.add("floor")
+      }
+
+      
+      //player
       if(player.x===x&&player.y===y){
-        cell.classList.add("player")
+        let token = document.createElement("div");
+        token.style.width = "20px";
+        token.style.height = "20px";
+        token.style.background = "red";
+        token.style.borderRadius = "50%";
+        token.style.margin = "5px";
+        token.style.boxShadow = "0 0 5px #000";
+        cell.appendChild(token);
       }
       gameArea.appendChild(cell)
     }
@@ -110,5 +139,5 @@ function render(){
 }}
 
 
-render()
 
+render()
