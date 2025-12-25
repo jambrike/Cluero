@@ -7,7 +7,7 @@ I need some extra hours to get hotel so this is what this is for in hack club, a
 
 build/deploy instructions:
 
-It is mostly written in javascript and obv some html,css. 
+It is mostly written in javascript and obv some html,css.
 
 You can fork the repository or download and then open the index.html file or host on a service such as netlify or cloudflare.
 
