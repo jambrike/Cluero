@@ -63,18 +63,21 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowLeft")dx=-1
   if(e.key==="ArrowRight")dx=1
 
-  const nx=player.x+dx
-  const ny=player.y+dy
+  let nx=player.x+dx
+  let ny=player.y+dy
 
-  if(nx>=0&&nx<cols&&ny>=0&&ny<rows&&board[ny][nx]===1){
+  if(caniwalk(nx,ny)){
     player.x=nx
     player.y=ny
     stepsLeft--
     document.getElementById("stepsleft").textContent=stepsLeft
     render()
-    checkRoom()
+    
+    if(getRoomAt(nx, ny) && !getRoomAt(nx-dx, ny-dy)){
+        console.log("Entered a room!"); stepsLeft = 0; document.getElementById("stepsleft").textContent = stepsLeft;
+        
   }
-})
+}  })
 
 function checkRoom(){
   for(const r in roomTiles){
@@ -137,7 +140,27 @@ function render(){
       gameArea.appendChild(block)
   }}
 }}
+//now make it so they can only enter through door
+function caniwalk(targetX,targetY){
+  if (targetX < 0 || targetX >= cols || targetY < 0 || targetY >= rows) return false;
 
+  //room walls
+  let currentRoom = RoomAt(player.x, player.y);
+  let targetRoom = RoomAt(targetX, targetY);
+  
+  // CASE 1: Entering a room from the hallway
+  if (!currentRoom && targetRoom) {
+    // You must be stepping ONTO a door square to enter
+    return targetRoom.doors.some(door => door.x === targetX && door.y === targetY);
+  }
 
+  // CASE 2: Leaving a room into the hallway
+  if (currentRoom && !targetRoom) {
+    // You must be standing ON a door square to step out
+    return currentRoom.doors.some(door => door.x === player.x && door.y === player.y);
+  }
 
+  //both floor or both room
+  return true;
+}
 render()
