@@ -1,0 +1,62 @@
+body{
+                background-color: rgb(49, 27, 50);
+                font-size: 12px;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+            }
+        .wrapper{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            }
+            #game {
+                display: grid;
+                width: 100vw;
+                 height: 100vh;/*50x30*/
+                grid-template-columns: repeat(18, 1fr);
+                grid-template-rows: repeat(18, 1fr);
+                background: #111;
+
+                justify-content: center;
+                align-content: center;
+                gap:2px;
+            }
+            .cell{
+                border:1px solid #222;
+                background:#1c1c1c;
+                width:32px;height:32px;
+                background-image: url(woodflooring.png);
+            }
+            .player{
+                background:silver;
+            }
+            .room{
+                background: rgba(90, 60, 180, 0.6);
+                border: 2px solid rgb(150, 110, 255);
+                box-sizing: border-box;
+            }
+
+            #cornerbox{
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: #222;
+                padding: 10px 15px;
+                border-radius: 8px;
+                text-align: center;
+                color: #eee;
+            }
+            .roomoverlay{/*player move free*/
+                pointer-events: none;
+            }
+            #rolldice{
+                display:block;
+                margin-bottom: 8px;
+                padding:5px 10px;
+                cursor:pointer;
+            }
+        
