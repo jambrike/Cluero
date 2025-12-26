@@ -27,14 +27,35 @@ for(let y=0;y<rows;y++){
 const player={x:6,y:1}
 let stepsLeft=0
 //detect by position for this cause only 300 squares tbf
-const roomTiles={
-  kitchen:      { x: 0,  y: 0,  w: 4, h: 4, type: "kitchen", doors: [{x:3, y:4}] },
-  ballroom:     { x: 6,  y: 0,  w: 6, h: 5, type: "room",    doors: [{x:6, y:5}, {x:11, y:5}] },
-  conservatory: { x: 13, y: 0,  w: 5, h: 4, type: "study",   doors: [{x:13, y:4}] },
-  library:      { x: 0,  y: 11, w: 4, h: 5, type: "library", doors: [{x:3, y:11}] },
-  study:        { x: 13, y: 11, w: 5, h: 5, type: "study",   doors: [{x:13, y:11}] }
+//complete rwork for spots array to each room and then give it an x and y
+const roomTiles = {
+  kitchen: { 
+    x: 0, y: 0, w: 4, h: 4, type: "kitchen", doors: [{x:3, y:4}],
+    spots: [{x:1, y:1, name:"bin"}, {x:2, y:3, name:"rug"}, {x:0, y:2, name:"drawer"}] 
+  },
+  ballroom: { 
+    x: 6, y: 0, w: 6, h: 5, type: "room", doors: [{x:6, y:5}, {x:11, y:5}],
+    spots: [{x:7, y:1, name:"bin"}, {x:10, y:3, name:"rug"}, {x:8, y:0, name:"drawer"}]
+  },
+  conservatory: { 
+    x: 13, y: 0, w: 5, h: 4, type: "study", doors: [{x:13, y:4}],
+    spots: [{x:14, y:1, name:"bin"}, {x:17, y:1, name:"rug"}, {x:15, y:3, name:"drawer"}]
+  },
+  library: { 
+    x: 0, y: 11, w: 4, h: 5, type: "library", doors: [{x:3, y:11}],
+    spots: [{x:1, y:12, name:"bin"}, {x:2, y:14, name:"rug"}, {x:1, y:15, name:"drawer"}]
+  },
+  study: { 
+    x: 13, y: 11, w: 5, h: 5, type: "study", doors: [{x:13, y:11}],
+    spots: [{x:14, y:12, name:"bin"}, {x:17, y:12, name:"rug"}, {x:15, y:15, name:"drawer"}]
+  }
 };
-
+// This then picks which of the 3 items has the clue
+const winningSpots = {};
+for (let room in roomTiles) {
+  let s = roomTiles[room].spots;
+  winningSpots[room] = s[Math.floor(Math.random() * s.length)].name;
+}
 document.getElementById("rolldice").onclick=()=>{
   const d1=Math.floor(Math.random()*6)+1
   const d2=Math.floor(Math.random()*6)+1
@@ -63,21 +84,29 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowLeft")dx=-1
   if(e.key==="ArrowRight")dx=1
 
+  if(dx === 0 && dy === 0) return;
+
   let nx=player.x+dx
   let ny=player.y+dy
 
   if(caniwalk(nx,ny)){
+    let wasInRoom = RoomAt(player.x, player.y);
     player.x=nx
     player.y=ny
     stepsLeft--
     document.getElementById("stepsleft").textContent=stepsLeft
+    
+    let nowInRoom = RoomAt(nx, ny);
     render()
     
-    if(getRoomAt(nx, ny) && !getRoomAt(nx-dx, ny-dy)){
-        console.log("Entered a room!"); stepsLeft = 0; document.getElementById("stepsleft").textContent = stepsLeft;
-        
+    if(nowInRoom && !wasInRoom){
+        console.log("Entered a room!"); 
+        stepsLeft = 0; 
+        document.getElementById("stepsleft").textContent = stepsLeft;
+        alert("You entered the " + nowInRoom.type + "! Search the objects for clues.");
+    }
   }
-}  })
+})
 
 function checkRoom(){
   for(const r in roomTiles){
@@ -100,17 +129,37 @@ function render(){
   for(let y=0;y<rows;y++){
     for(let x=0;x<cols;x++){
       let cell=document.createElement("div")
-      cell.classList.add=("cell")
+      cell.className = "cell";
 
       let room=RoomAt(x,y)
       if(room){
         cell.classList.add("room")
         cell.classList.add(room.type)
+        
+        room.spots.forEach(spot => {
+          if (spot.x === x && spot.y === y) {
+            let item = document.createElement("div");
+            item.innerHTML = "🔍"; // The clickable icon
+            item.style.cursor = "pointer";
+            
+            item.onclick = function() {
+              if (player.x === x && player.y === y) {
+                if (winningSpots[room.type] === spot.name) {
+                  alert("You found a clue in the " + spot.name + "!");
+                } else {
+                  alert("Nothing inside the " + spot.name + ".");
+                }
+              } else {
+                alert("Walk over to the " + spot.name + " to search it.");
+              }
+            };
+            cell.appendChild(item);
+          }
+        });
       }else{
         cell.classList.add("floor")
       }
-
-      
+  
       //player
       if(player.x===x&&player.y===y){
         let token = document.createElement("div");
@@ -125,21 +174,8 @@ function render(){
       gameArea.appendChild(cell)
     }
   }
+}
 
-  for(const r in roomTiles){
-  const t=roomTiles[r]
-  for(let y=0;y<t.h;y++){
-    for(let x=0;x<t.w;x++){
-      const block=document.createElement("div")
-
-      block.className="room"
-      block.style.gridColumn=t.x+x+1
-      block.style.gridRow=t.y+y+1
-      block.style.pointerEvents="none"
-      
-      gameArea.appendChild(block)
-  }}
-}}
 //now make it so they can only enter through door
 function caniwalk(targetX,targetY){
   if (targetX < 0 || targetX >= cols || targetY < 0 || targetY >= rows) return false;
@@ -148,19 +184,39 @@ function caniwalk(targetX,targetY){
   let currentRoom = RoomAt(player.x, player.y);
   let targetRoom = RoomAt(targetX, targetY);
   
-  // CASE 1: Entering a room from the hallway
   if (!currentRoom && targetRoom) {
-    // You must be stepping ONTO a door square to enter
+    // stepping on a door square to enter
     return targetRoom.doors.some(door => door.x === targetX && door.y === targetY);
   }
 
-  // CASE 2: Leaving a room into the hallway
   if (currentRoom && !targetRoom) {
-    // You must be standing ON a door square to step out
     return currentRoom.doors.some(door => door.x === player.x && door.y === player.y);
   }
 
   //both floor or both room
   return true;
+}
+
+//final guess on button
+document.getElementById("solvebutton").onclick= function() {
+    let gSuspect = prompt("Who is the killer?");
+    let gWeapon = prompt("What was the weapon?");
+    let gRoom = prompt("In which room?");
+
+    if (!gSuspect || !gWeapon || !gRoom) return;
+
+    let isCorrect =
+      gSuspect.toLowerCase() === answer.suspect.toLowerCase() &&
+      gWeapon.toLowerCase() === answer.weapons.toLowerCase() &&
+      gRoom.toLowerCase() === answer.room.toLowerCase();
+
+    if (isCorrect) {
+      alert("Congratulations You solved the mystery!");
+      location.reload();
+    } else {
+      alert(
+        `Wrong!! The correct answer was: ${answer.suspect} with the ${answer.weapons} in the ${answer.room}.`
+      );
+    }
 }
 render()
