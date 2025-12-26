@@ -100,10 +100,14 @@ document.addEventListener("keydown",e=>{
     render()
     
     if(nowInRoom && !wasInRoom){
-        console.log("Entered a room!"); 
+        console.log("Entered a room"); 
         stepsLeft = 0; 
         document.getElementById("stepsleft").textContent = stepsLeft;
-        alert("You entered the " + nowInRoom.type + "! Search the objects for clues.");
+        // Small delay to ensure render completes before alert
+        //beause i thnk it was causing to freeze
+        setTimeout(() => {
+          alert("You entered the " + nowInRoom.type + ". Search the Room for clues.");
+        }, 100);
     }
   }
 })
