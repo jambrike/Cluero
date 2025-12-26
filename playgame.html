@@ -2,19 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cluero</title>
         <link rel="stylesheet" href="classy.css">
     </head>
+
     <body><div class="wrapper">
+
         <div class="pagewall">
             <div id="game"></div>
             <div id="cornerbox">
                 <button id="rolldice">Roll Dice</button>
                 <p>Steps left: <span id="stepsleft">0</span></p>
-            </div>
-     <script src="game.js"></script>
-
+                <button id="solvebutton">Your final guess!</button>
+            </div> 
+    <div id="fail-screen" class="fullscreen" style="display:none;">
+        <h1 style="color:white;">You failed to solve the case in time(killer got away)</h1>
+        <button onclick="location.reload()">Restart Game</button></div>
     </div></div></body>
-</head>
+
+    <script src="playgame.js"></script>
 </html>
