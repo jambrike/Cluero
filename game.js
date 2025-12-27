@@ -25,7 +25,7 @@ for(let y=0;y<rows;y++){
 }
 
 const player={x:6,y:1}
-let stepsLeft=0
+let stepsleft=0
 //detect by position for this cause only 300 squares tbf
 //complete rwork for spots array to each room and then give it an x and y
 const roomTiles = {
@@ -59,8 +59,8 @@ for (let room in roomTiles) {
 document.getElementById("rolldice").onclick=()=>{
   const d1=Math.floor(Math.random()*6)+1
   const d2=Math.floor(Math.random()*6)+1
-  stepsLeft=d1+d2
-  document.getElementById("stepsleft").textContent=stepsLeft
+  stepsleft=d1+d2
+  document.getElementById("stepsleft").textContent=stepsleft  
 }
  
 //simeple function to find room by player position
@@ -76,7 +76,7 @@ function RoomAt(x, y) {
 }
 
 document.addEventListener("keydown",e=>{
-  if(stepsLeft<=0)return
+  if(stepsleft<=0)return
 
   let dx=0,dy=0
   if(e.key==="ArrowUp")dy=-1
@@ -93,16 +93,16 @@ document.addEventListener("keydown",e=>{
     let wasInRoom = RoomAt(player.x, player.y);
     player.x=nx
     player.y=ny
-    stepsLeft--
-    document.getElementById("stepsleft").textContent=stepsLeft
-    
+    stepsleft--
+    document.getElementById("stepsleft").textContent=stepsleft
+
     let nowInRoom = RoomAt(nx, ny);
     render()
     
     if(nowInRoom && !wasInRoom){
         console.log("Entered a room"); 
-        stepsLeft = 0; 
-        document.getElementById("stepsleft").textContent = stepsLeft;
+        stepsleft = 0; 
+        document.getElementById("stepsleft").textContent = stepsleft;
         // Small delay to ensure render completes before alert
         //beause i thnk it was causing to freeze
         setTimeout(() => {
@@ -218,8 +218,7 @@ document.getElementById("solvebutton").onclick= function() {
       alert("Congratulations You solved the mystery!");
       location.reload();
     } else {
-      alert(
-        `Wrong!! The correct answer was: ${answer.suspect} with the ${answer.weapons} in the ${answer.room}.`
+      alert(`Wrong!! The correct answer was: ${answer.suspect} with the ${answer.weapons} in the ${answer.room}.`
       );
     }
 }
