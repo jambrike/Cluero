@@ -66,6 +66,8 @@ document.getElementById("rolldice").onclick=()=>{
   //increase per turn
   rollCount++
   document.getElementById("stepsleft").textContent=stepsleft  
+  //render again to show steps again
+  render()
 }
  
 //simeple function to find room by player position
@@ -197,23 +199,29 @@ function render(){
 }
 
 //now make it so they can only enter through door
-function caniwalk(targetX,targetY){
+function caniwalk(targetX, targetY) {
+  // 1. Map Boundaries
   if (targetX < 0 || targetX >= cols || targetY < 0 || targetY >= rows) return false;
 
-  //room walls
   let currentRoom = RoomAt(player.x, player.y);
   let targetRoom = RoomAt(targetX, targetY);
-  
+
+  // Floor to Room
   if (!currentRoom && targetRoom) {
-    // stepping on a door square to enter
     return targetRoom.doors.some(door => door.x === targetX && door.y === targetY);
   }
 
+  // leaving
   if (currentRoom && !targetRoom) {
+    // You can only leave if on door
     return currentRoom.doors.some(door => door.x === player.x && door.y === player.y);
   }
 
-  //both floor or both room
+  //  room to room
+  if (currentRoom && targetRoom && currentRoom !== targetRoom) {
+    return false;
+  }
+
   return true;
 }
 
