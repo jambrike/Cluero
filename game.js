@@ -11,6 +11,8 @@ const answer={
   weapons: randomFrom(weapons),
   room: randomFrom(rooms)
 }
+///roll counter
+let rollCount=0
 
 const rows=18
 const cols=18
@@ -31,15 +33,15 @@ let stepsleft=0
 //complete rwork for spots array to each room and then give it an x and y
 const roomTiles = {
   kitchen: { 
-    x: 0, y: 0, w: 4, h: 4, type: "kitchen", doors: [{x:3, y:4}],
+    x: 0, y: 0, w: 4, h: 4, type: "kitchen", doors: [{x:3, y:3}],
     spots: [{x:1, y:1, name:"bin"}, {x:2, y:3, name:"rug"}, {x:0, y:2, name:"drawer"}] 
   },
   ballroom: { 
-    x: 6, y: 0, w: 6, h: 5, type: "room", doors: [{x:6, y:5}, {x:11, y:5}],
+    x: 6, y: 0, w: 6, h: 5, type: "room", doors: [{x:6, y:4}, {x:11, y:4}],
     spots: [{x:7, y:1, name:"bin"}, {x:10, y:3, name:"rug"}, {x:8, y:0, name:"drawer"}]
   },
   conservatory: { 
-    x: 13, y: 0, w: 5, h: 4, type: "study", doors: [{x:13, y:4}],
+    x: 13, y: 0, w: 5, h: 4, type: "study", doors: [{x:13, y:3}],
     spots: [{x:14, y:1, name:"bin"}, {x:17, y:1, name:"rug"}, {x:15, y:3, name:"drawer"}]
   },
   library: { 
@@ -61,6 +63,8 @@ document.getElementById("rolldice").onclick=()=>{
   const d1=Math.floor(Math.random()*6)+1
   const d2=Math.floor(Math.random()*6)+1
   stepsleft=d1+d2
+  //increase per turn
+  rollCount++
   document.getElementById("stepsleft").textContent=stepsleft  
 }
  
