@@ -159,22 +159,32 @@ function render(){
         cell.classList.add(room.type)
         
         room.spots.forEach(spot => {
+
           if (spot.x === x && spot.y === y) {
             let item = document.createElement("div");
-            item.innerHTML = "🔍"; // The clickable icon
+            item.innerHTML = "🔍"; 
             item.style.cursor = "pointer";
             
             item.onclick = function() {
               if (player.x === x && player.y === y) {
-                if (winningSpots[room.type] === spot.name) {
-                  alert("You found a clue in the " + spot.name + "!");
-                } else {
-                  alert("Nothing inside the " + spot.name + ".");
+              let message = ""; 
+
+             if (winningSpots[room.type] === spot.name) {
+             // basic filler clue message rn
+              message = "CLUE: You found evidence of the " + answer.weapons + " in the " + spot.name + "!";
+             alert("You found a clue!"); 
+          } else {
+            message = "Nothing of interest inside the " + spot.name + ".";
+            alert("Empty...");
                 }
-              } else {
-                alert("Walk over to the " + spot.name + " to search it.");
-              }
-            };
+
+    
+      document.getElementById("clue-text").textContent = message;
+
+    } else {
+     alert("You'll have to go closer to the " + spot.name + ".");
+    }
+    };
             cell.appendChild(item);
           }
         });
