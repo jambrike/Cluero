@@ -128,4 +128,5 @@ body{
             }
             .door{
                 background: rgb(111, 68, 68);
+              z-index:4;
             }
