@@ -137,7 +137,18 @@ function render(){
       cell.className = "cell";
 
       let room=RoomAt(x,y)
-      if(room){
+
+      //door or room
+      let isDoor = false;
+      for (let key in roomTiles) {
+        if (roomTiles[key].doors.some(d => d.x === x && d.y === y)) {
+          isDoor = true;
+          break;
+        }
+      }
+      if(isDoor){
+        cell.classList.add("door")
+      } else if(room){
         cell.classList.add("room")
         cell.classList.add(room.type)
         
