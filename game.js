@@ -1,7 +1,7 @@
 const suspects=["Janitor","Aunt","Chef","James","Butler","Grandfather"]
 const weapons=["knife","candlestick","revolver","wrench","rope"]
 const rooms=["kitchen","ballroom","conservatory","library","study"]
-
+//random pick function
 function randomFrom(arr){
   return arr[Math.floor(Math.random()*arr.length)]
 }
@@ -15,6 +15,7 @@ const answer={
 const rows=18
 const cols=18
 const gameArea=document.getElementById("game")
+//walls
 
 const board=[]
 for(let y=0;y<rows;y++){
@@ -23,8 +24,8 @@ for(let y=0;y<rows;y++){
     board[y][x]=1
   }
 }
-
-const player={x:6,y:1}
+//put guy in yhr middle
+const player={x:9,y:9}
 let stepsleft=0
 //detect by position for this cause only 300 squares tbf
 //complete rwork for spots array to each room and then give it an x and y
