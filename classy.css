@@ -43,7 +43,7 @@ body{
                 box-sizing: border-box;
             }
             .floor{
-                background-image: url(woodflooring.png);
+                background-image: url(image/woodflooring.png);
                 background-size: cover;
                 background-repeat: no-repeat;
                 background-position: center;
@@ -51,7 +51,7 @@ body{
 
             }
             .library{
-                background-image: url(books.png);
+                background-image: url(image/books.png);
                 background-size: cover;
                 background-repeat: no-repeat;
                 background-position: center;
@@ -59,26 +59,27 @@ body{
                 
             }
             .livingroom{
-                background-image: url(livingroom.png);
+                background-image: url(image/livingroom.png);
                 background-size: cover;
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: cover;
             }   
             .kitchen{
-                background-image: url(kitchenmarble.png);
+                background-image: url(image/kitchenmarble.png);
                 background-size: cover;
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: cover;
             }
             .study{/*using for both*/
-                background-image: url(studyroom.png);
+                background-image: url(image/studyroom.png);
                 background-size: cover;
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: cover;
             }
+
 
             #detectivecard{
                 color:none;
@@ -125,4 +126,6 @@ body{
             .player{
                 z-index: 20;
             }
-        
+            .door{
+                background: rgb(111, 68, 68);
+            }
