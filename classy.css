@@ -125,6 +125,9 @@ body{
                 border-radius: 8px;
                 text-align: center;
                 color: #eee;
+                align-items: center;
+                flex-direction: column;
+                display: flex;
             }
             .roomoverlay{/*player move free*/
                 pointer-events: none;
