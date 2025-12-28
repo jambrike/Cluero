@@ -6,22 +6,24 @@
         <title>Cluero</title>
         <link rel="stylesheet" href="classy.css">
     </head>
-
+    <div class="header">
+        <h1>Cluero</h1>
+        <div id="cornerbox">
+                <button id="rolldice">Roll Dice</button>
+                <p>Steps left: <span id="stepsleft">0</span></p>
+                <button id="solvebutton">Your final guess</button>
+            </div> 
+    </div>
     <body><div class="wrapper">
 
         <div class="pagewall">
-            <div class="subtitle">
-                <span id="clue-text">search for clues</span>
-            </div>
             <div id="game"></div>
-            <div id="cornerbox">
-                <button id="rolldice">Roll Dice</button>
-                <p>Steps left: <span id="stepsleft">0</span></p>
-                <button id="solvebutton">Your final guess!</button>
-            </div> 
     <div id="fail-screen" class="fullscreen" style="display:none;">
         <h1 style="color:white;">You failed to solve the case in time(killer got away)</h1>
         <button onclick="location.reload()">Restart Game</button></div>
+        <div class="subtitle">
+                <span id="clue-text">search for clues</span>
+            </div>
     </div></div></body>
 
     <script src="game.js"></script>
