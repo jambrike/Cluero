@@ -11,4 +11,6 @@ It is mostly written in javascript and obv some html,css.
 
 You can fork the repository or download and then open the index.html file or host on a service such as netlify or cloudflare.
 
+just incase neccassary here is the link to its simple itch.io page https://jambrike.itch.io/cleuro
+
 it is also available through the website cluero.pages.dev
