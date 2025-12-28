@@ -61,15 +61,15 @@ const shuffledRooms = roompool.sort(() => 0.5 - Math.random());
 
 const cluelocations={
   suspect:{
-    room: shuffledrooms[0], spot:randomFrom(roomTiles[shuffled[0]].spots).name,
+    room: shuffledRooms[0], spot:randomFrom(roomTiles[shuffledRooms[0]].spots).name,
     sub:'something something'
   },
   weapon:{
-    room: shuffledrooms[1], spot:randomFrom(roomTiles[shuffled[1]].spots).name,
+    room: shuffledRooms[1], spot:randomFrom(roomTiles[shuffledRooms[1]].spots).name,
     sub:'something something'
   },
   room:{
-    room: shuffledrooms[2], spot:randomFrom(roomTiles[shuffled[2]].spots).name,
+    room: shuffledRooms[2], spot:randomFrom(roomTiles[shuffledRooms[2]].spots).name,
     sub:'something something'
   },
 };
