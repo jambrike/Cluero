@@ -79,7 +79,13 @@ body{
                 background-position: center;
                 background-size: cover;
             }
-
+            .subtitle{
+                width: 100%;
+                text-align: center; font-family: 'Courier New', Courier, monospace;
+                min-height: 20px; margin-top: 5px;
+                padding: 10px; border-top: 2px solid #444;
+                color:#ffffff;
+            }
 
             #detectivecard{
                 color:none;
@@ -128,5 +134,4 @@ body{
             }
             .door{
                 background: rgb(111, 68, 68);
-              z-index:4;
             }
