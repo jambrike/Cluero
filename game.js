@@ -1,30 +1,296 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Cluero</title>
-        <link rel="stylesheet" href="classy.css">
-    </head>
-    <body><div class="wrapper">//imside wrapper
- <div class="header">
-        <h1>Cluero</h1>
-        <div id="cornerbox">
-                <button id="rolldice">Roll Dice</button>
-                <p>Steps left: <span id="stepsleft">0</span></p>
-                <button id="solvebutton">Your final guess</button>
-            </div> 
-    </div>
-     <div class="subtitle">
-                <span id="clue-text">search for clues</span>
-            </div>
-        <div class="pagewall">
-            <div id="game"></div>
-    <div id="fail-screen" class="fullscreen" style="display:none;">
-        <h1 style="color:white;">You failed to solve the case in time(killer got away)</h1>
-        <button onclick="location.reload()">Restart Game</button></div>
-       
-    </div></div></body>
+const suspects=["Janitor","Aunt","Chef","James","Butler","Grandfather"]
+const weapons=["knife","candlestick","revolver","wrench","rope"]
+const rooms=["kitchen","ballroom","conservatory","library","study"]
+//random pick function
+function randomFrom(arr){
+  return arr[Math.floor(Math.random()*arr.length)]
+}
 
-    <script src="game.js"></script>
-</html>
+const answer={
+  suspect: randomFrom(suspects),
+  weapons: randomFrom(weapons),
+  room: randomFrom(rooms)
+}
+
+///roll counter
+let rollCount=0
+
+const rows=18
+const cols=18
+const gameArea=document.getElementById("game")
+//walls
+
+const board=[]
+for(let y=0;y<rows;y++){
+  board[y]=[]
+  for(let x=0;x<cols;x++){
+    board[y][x]=1
+  }
+}
+//put guy in yhr middle
+const player={x:9,y:9}
+let stepsleft=0
+//detect by position for this cause only 300 squares tbf
+//complete rwork for spots array to each room and then give it an x and y
+const roomTiles = {
+  kitchen: { 
+    x: 0, y: 0, w: 4, h: 4, type: "kitchen", doors: [{x:3, y:3}],
+    spots: [{x:1, y:1, name:"bin"}, {x:2, y:3, name:"rug"}, {x:0, y:2, name:"drawer"}] 
+  },
+  ballroom: { 
+    x: 6, y: 0, w: 6, h: 5, type: "room", doors: [{x:6, y:4}, {x:11, y:4}],
+    spots: [{x:7, y:1, name:"bin"}, {x:10, y:3, name:"rug"}, {x:8, y:0, name:"drawer"}]
+  },
+  conservatory: { 
+    x: 13, y: 0, w: 5, h: 4, type: "study", doors: [{x:13, y:3}],
+    spots: [{x:14, y:1, name:"bin"}, {x:17, y:1, name:"rug"}, {x:15, y:3, name:"drawer"}]
+  },
+  library: { 
+    x: 0, y: 11, w: 4, h: 5, type: "library", doors: [{x:3, y:11}],
+    spots: [{x:1, y:12, name:"bin"}, {x:2, y:14, name:"rug"}, {x:1, y:15, name:"drawer"}]
+  },
+  study: { 
+    x: 13, y: 11, w: 5, h: 5, type: "study", doors: [{x:13, y:11}],
+    spots: [{x:14, y:12, name:"bin"}, {x:17, y:12, name:"rug"}, {x:15, y:15, name:"drawer"}]
+  }
+};
+//place the answer in 3 different clue places
+const roompool = Object.keys(roomTiles);
+//
+const shuffledRooms = roompool.sort(() => 0.5 - Math.random());
+//change to room key because i using same css for conserve and i prob coulda js chnaged that but then thered be pther stuff
+const cluelocations={
+  suspect:{
+    roomKey: shuffledRooms[0], spot:randomFrom(roomTiles[shuffledRooms[0]].spots).name,
+    sub:`this is ${answer.suspect} item and it has blood stains`
+  },
+  weapon:{
+    roomKey: shuffledRooms[1], spot:randomFrom(roomTiles[shuffledRooms[1]].spots).name,
+    sub:`Its the ${answer.weapons}`
+  },
+  room:{
+    roomKey: shuffledRooms[2], spot:randomFrom(roomTiles[shuffledRooms[2]].spots).name,
+    sub:`Theres some blood in here.`
+  },
+};
+// This then picks which of the 3 items has the clue
+const winningSpots = {};
+for (let room in roomTiles) {
+  let s = roomTiles[room].spots;
+  winningSpots[room] = s[Math.floor(Math.random() * s.length)].name;
+}
+document.getElementById("rolldice").onclick=()=>{
+  const d1=Math.floor(Math.random()*6)+1
+  const d2=Math.floor(Math.random()*6)+1
+  stepsleft=d1+d2
+  //increase per turn
+  rollCount++
+  document.getElementById("stepsleft").textContent=stepsleft  
+  //render again to show steps again
+  render()
+}
+ 
+//simeple function to find room by player position
+function RoomAt(x, y) {
+  for (let key in roomTiles) {
+    let r = roomTiles[key];
+    if (x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h) {
+      return r;
+    }
+  }
+
+  return null;
+}
+
+document.addEventListener("keydown",e=>{
+  if(stepsleft<=0)return
+
+  let dx=0,dy=0
+  if(e.key==="ArrowUp")dy=-1
+  if(e.key==="ArrowDown")dy=1
+  if(e.key==="ArrowLeft")dx=-1
+  if(e.key==="ArrowRight")dx=1
+
+  if(dx === 0 && dy === 0) return;
+
+  let nx=player.x+dx
+  let ny=player.y+dy
+
+  if(caniwalk(nx,ny)){
+    let wasInRoom = RoomAt(player.x, player.y);
+    player.x=nx
+    player.y=ny
+    stepsleft--
+    document.getElementById("stepsleft").textContent=stepsleft
+
+    let nowInRoom = RoomAt(nx, ny);
+    render()
+    
+    if(nowInRoom && !wasInRoom){
+        console.log("Entered a room"); 
+        stepsleft = 0; 
+        document.getElementById("stepsleft").textContent = stepsleft;
+        // Small delay to ensure render completes before alert
+        //beause i thnk it was causing to freeze
+        setTimeout(() => {
+          alert("You entered the " + nowInRoom.type + ". Search the Room for clues.");
+        }, 100);
+    }
+  }
+})
+
+function checkRoom(){
+  for(const r in roomTiles){
+    const t=roomTiles[r]
+    if(//detect the bigger room update
+      player.x>=t.x &&
+      player.x<t.x+t.w &&
+      player.y>=t.y &&
+      player.y<t.y+t.h
+    ){
+      console.log("in room:",r)
+      return
+    }
+  }
+}
+
+function render(){
+  gameArea.innerHTML=""
+
+  for(let y=0;y<rows;y++){
+    for(let x=0;x<cols;x++){
+      let cell=document.createElement("div")
+      cell.className = "cell";
+
+      let room=RoomAt(x,y)
+
+      //door or room
+      let isDoor = false;
+      for (let key in roomTiles) { 
+        if (roomTiles[key].doors.some(d => d.x === x && d.y === y)) {
+          isDoor = true;
+          break;
+        }
+      }
+      if(isDoor){
+        cell.classList.add("door")
+      } else if(room){
+        cell.classList.add("room")
+        cell.classList.add(room.type)
+        
+        room.spots.forEach(spot => {
+
+          if (spot.x === x && spot.y === y) {
+            let item = document.createElement("div");
+
+            item.innerHTML = "🔍"; 
+            item.style.cursor = "pointer";
+            
+            item.onclick = function() {
+              if (player.x === x && player.y === y) {
+              let message = ""; 
+              let foundit=false;
+              //check
+              for(let key in  cluelocations){
+                let clue = cluelocations[key];
+
+                let clueRoomType=roomTiles[clue.roomKey].type;
+
+                if(clueRoomType === room.type && spot.name === clue.spot){
+                  message=clue.sub;
+                  foundit=true;
+                  
+                  break;//stop looking
+                }
+              }
+
+             if (foundit) {
+             // basic filler clue message rn/not anymore
+              document.getElementById("clue-text").textContent = "EVIDENCE: " + message;
+              document.getElementById("clue-text").style.color = "gold";
+              alert("Yo found a good clue!")
+          } else {
+            message = "Nothing of interest inside the " + spot.name + ".";
+            document.getElementById("clue-text").textContent = message;
+            document.getElementById("clue-text").style.color = "#c4c4c4ff";
+            alert("Empty.");
+                }
+
+    
+      
+
+    } else {
+     alert("You'll have to go closer to the " + spot.name + ".");
+    }
+    };
+            cell.appendChild(item);
+          }
+        });
+      }else{
+        cell.classList.add("floor")
+      }
+  
+      //player
+      if(player.x===x&&player.y===y){
+        let token = document.createElement("div");
+        token.style.width = "20px";
+        token.style.height = "20px";
+        token.style.background = "red";
+        token.style.borderRadius = "50%";
+        token.style.margin = "5px";
+        token.style.boxShadow = "0 0 5px #000";
+        cell.appendChild(token);
+      }
+      gameArea.appendChild(cell)
+    }
+  }
+}
+
+//now make it so they can only enter through door
+function caniwalk(targetX, targetY) {
+  if (targetX < 0 || targetX >= cols || targetY < 0 || targetY >= rows) return false;
+
+  let currentRoom = RoomAt(player.x, player.y);
+  let targetRoom = RoomAt(targetX, targetY);
+
+  // Floor to Room
+  if (!currentRoom && targetRoom) {
+    return targetRoom.doors.some(door => door.x === targetX && door.y === targetY);
+  }
+
+  // leaving
+  if (currentRoom && !targetRoom) {
+    // You can only leave if on door
+    return currentRoom.doors.some(door => door.x === player.x && door.y === player.y);
+  }
+
+  //  room to room
+  if (currentRoom && targetRoom && currentRoom !== targetRoom) {
+    return false;
+  }
+
+  return true;
+}
+
+//final guess on button
+document.getElementById("solvebutton").onclick= function() {
+    let gSuspect = prompt("Who is the killer?");
+    let gWeapon = prompt("What was the weapon?");
+    let gRoom = prompt("In which room?");
+
+    if (!gSuspect || !gWeapon || !gRoom) return;
+
+    let isCorrect =
+      gSuspect.toLowerCase() === answer.suspect.toLowerCase() &&
+      gWeapon.toLowerCase() === answer.weapons.toLowerCase() &&
+      gRoom.toLowerCase() === answer.room.toLowerCase();
+
+    if (isCorrect) {
+      alert(`Congratulations You solved the mystery! and it took you ${rollCount} turns, nice one! `);
+      location.reload();
+    } else {
+      alert(`Wrong!! After ${rollCount} turns. The correct answer was: ${answer.suspect} with the ${answer.weapons} in the ${answer.room}.`
+      );
+    }
+}
+render()
