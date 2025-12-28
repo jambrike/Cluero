@@ -11,6 +11,26 @@ const answer={
   weapons: randomFrom(weapons),
   room: randomFrom(rooms)
 }
+//place the answer in 3 different clue places
+const roompool = Object.keys(roomTiles);
+//
+const shuffledRooms = roompool.sort(() => 0.5 - Math.random());
+
+const cluelocations={
+  suspect:{
+    room: shuffled[0], spot:randomFrom(roomTiles[shuffled[0]].spots).name,
+    sub:'something something'
+  },
+  weapon:{
+    room: shuffled[1], spot:randomFrom(roomTiles[shuffled[1]].spots).name,
+    sub:'something something'
+  },
+  room:{
+    room: shuffled[2], spot:randomFrom(roomTiles[shuffled[2]].spots).name,
+    sub:'something something'
+  },
+};
+
 ///roll counter
 let rollCount=0
 
@@ -146,7 +166,7 @@ function render(){
 
       //door or room
       let isDoor = false;
-      for (let key in roomTiles) {
+      for (let key in roomTiles) { 
         if (roomTiles[key].doors.some(d => d.x === x && d.y === y)) {
           isDoor = true;
           break;
@@ -168,14 +188,28 @@ function render(){
             item.onclick = function() {
               if (player.x === x && player.y === y) {
               let message = ""; 
+              let foundit=false;
+              //check
+              for(let key in cluelocations){
+                let clue = clueLocations[key];
+                if(room.type === clue.room && spot.name === clue.spot){
+                  message=clue.sub;
+                  foundit=true;
+                  
+                  break;//stop looking
+                }
+              }
 
-             if (winningSpots[room.type] === spot.name) {
-             // basic filler clue message rn
-              message = "CLUE: You found evidence of the " + answer.weapons + " in the " + spot.name + "!";
-             alert("You found a clue!"); 
+             if (foundit) {
+             // basic filler clue message rn/not anymore
+              document.getElementById("clue-text").textContent = "EVIDENCE: " + message;
+              document.getElementById("clue-text").style.color = "gold";
+              alert("Yo found a good clue!")
           } else {
             message = "Nothing of interest inside the " + spot.name + ".";
-            alert("Empty...");
+            document.getElementById("clue-text").textContent = message;
+            document.getElementById("clue-text").style.color = "#c4c4c4ff";
+            alert("Empty.");
                 }
 
     
@@ -210,7 +244,6 @@ function render(){
 
 //now make it so they can only enter through door
 function caniwalk(targetX, targetY) {
-  // 1. Map Boundaries
   if (targetX < 0 || targetX >= cols || targetY < 0 || targetY >= rows) return false;
 
   let currentRoom = RoomAt(player.x, player.y);
