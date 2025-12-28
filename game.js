@@ -282,10 +282,10 @@ document.getElementById("solvebutton").onclick= function() {
       gRoom.toLowerCase() === answer.room.toLowerCase();
 
     if (isCorrect) {
-      alert("Congratulations You solved the mystery!");
+      alert("Congratulations You solved the mystery! and it took you ${rollCount} turns, nice one! ");
       location.reload();
     } else {
-      alert(`Wrong!! The correct answer was: ${answer.suspect} with the ${answer.weapons} in the ${answer.room}.`
+      alert(`Wrong!! After ${rollCount} turns. The correct answer was: ${answer.suspect} with the ${answer.weapons} in the ${answer.room}.`
       );
     }
 }
