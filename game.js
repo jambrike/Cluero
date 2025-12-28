@@ -11,25 +11,6 @@ const answer={
   weapons: randomFrom(weapons),
   room: randomFrom(rooms)
 }
-//place the answer in 3 different clue places
-const roompool = Object.keys(roomTiles);
-//
-const shuffledRooms = roompool.sort(() => 0.5 - Math.random());
-
-const cluelocations={
-  suspect:{
-    room: shuffled[0], spot:randomFrom(roomTiles[shuffled[0]].spots).name,
-    sub:'something something'
-  },
-  weapon:{
-    room: shuffled[1], spot:randomFrom(roomTiles[shuffled[1]].spots).name,
-    sub:'something something'
-  },
-  room:{
-    room: shuffled[2], spot:randomFrom(roomTiles[shuffled[2]].spots).name,
-    sub:'something something'
-  },
-};
 
 ///roll counter
 let rollCount=0
@@ -72,6 +53,25 @@ const roomTiles = {
     x: 13, y: 11, w: 5, h: 5, type: "study", doors: [{x:13, y:11}],
     spots: [{x:14, y:12, name:"bin"}, {x:17, y:12, name:"rug"}, {x:15, y:15, name:"drawer"}]
   }
+};
+//place the answer in 3 different clue places
+const roompool = Object.keys(roomTiles);
+//
+const shuffledRooms = roompool.sort(() => 0.5 - Math.random());
+
+const cluelocations={
+  suspect:{
+    room: shuffledrooms[0], spot:randomFrom(roomTiles[shuffled[0]].spots).name,
+    sub:'something something'
+  },
+  weapon:{
+    room: shuffledrooms[1], spot:randomFrom(roomTiles[shuffled[1]].spots).name,
+    sub:'something something'
+  },
+  room:{
+    room: shuffledrooms[2], spot:randomFrom(roomTiles[shuffled[2]].spots).name,
+    sub:'something something'
+  },
 };
 // This then picks which of the 3 items has the clue
 const winningSpots = {};
@@ -191,7 +191,7 @@ function render(){
               let foundit=false;
               //check
               for(let key in cluelocations){
-                let clue = clueLocations[key];
+                let clue = cluelocations[key];
                 if(room.type === clue.room && spot.name === clue.spot){
                   message=clue.sub;
                   foundit=true;
@@ -213,7 +213,7 @@ function render(){
                 }
 
     
-      document.getElementById("clue-text").textContent = message;
+      
 
     } else {
      alert("You'll have to go closer to the " + spot.name + ".");
